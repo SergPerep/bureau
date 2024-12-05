@@ -22,13 +22,13 @@ namespace Company.Function
         [Function("GetBlobs")]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
+            string message = "";
             foreach (BlobItem blob in blobContainerClient.GetBlobs()){
-                logger.LogInformation(blob.Name);
+                message = message + blob.Name + "\n";
             }
 
-            
             this.logger.LogInformation("C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions!");
+            return new OkObjectResult(message);
         }
     }
 }
