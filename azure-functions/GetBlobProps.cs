@@ -24,6 +24,7 @@ namespace Company.Function
             string? blobName = req.Query.Keys.Contains("blobName") ? req.Query["blobName"] : "";
             if (string.IsNullOrWhiteSpace(blobName)) return new NotFoundResult();
             BlobClient blobClient = blobContainerClient.GetBlobClient(blobName);
+            if (!blobClient.Exists()) return new NotFoundResult();
             BlobProperties props = blobClient.GetProperties();
             return new OkObjectResult(new {url = blobClient.Uri.ToString(), metadata = props.Metadata });
         }
