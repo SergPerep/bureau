@@ -19,14 +19,24 @@ namespace Company.Function
         }
 
         [Function("PutBlob")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "put")] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "put")] HttpRequest req)
         {
             string? blobName = req.Query.Keys.Contains("blobName") ? req.Query["blobName"] : "";
             if (string.IsNullOrWhiteSpace(blobName)) return new NotFoundResult();
             logger.LogTrace($"blobName: {blobName}");
             BlobClient blobClient = blobContainerClient.GetBlobClient(blobName);
             Stream stream = req.Body;
-            blobClient.Upload(stream, overwrite: true);
+
+            try
+            {
+                await blobClient.UploadAsync(stream, overwrite: true);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed to upload blob: {ex.Message}");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            logger.LogInformation($"{blobName} has been uploaded.");
             return new OkObjectResult($"{blobName} has been uploaded.");
         }
     }
