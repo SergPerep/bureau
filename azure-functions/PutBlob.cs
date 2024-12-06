@@ -23,9 +23,10 @@ namespace Company.Function
         {
             string? blobName = req.Query.Keys.Contains("blobName") ? req.Query["blobName"] : "";
             if (string.IsNullOrWhiteSpace(blobName)) return new NotFoundResult();
+            logger.LogTrace($"blobName: {blobName}");
             BlobClient blobClient = blobContainerClient.GetBlobClient(blobName);
             Stream stream = req.Body;
-            blobClient.Upload(stream);
+            blobClient.Upload(stream, overwrite: true);
             return new OkObjectResult($"{blobName} has been uploaded.");
         }
     }
