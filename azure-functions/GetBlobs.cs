@@ -20,7 +20,7 @@ namespace Company.Function
         }
 
         [Function("GetBlobs")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
+        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
         {
             List<string> blobNames = [.. blobContainerClient.GetBlobs().Select(bl => bl.Name)];
             return new OkObjectResult(new { blobNames });

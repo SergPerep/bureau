@@ -19,7 +19,7 @@ namespace Company.Function
         }
 
         [Function("GetBlobProps")]
-        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
+        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
         {
             string? blobName = req.Query.Keys.Contains("blobName") ? req.Query["blobName"] : "";
             if (string.IsNullOrWhiteSpace(blobName)) return new NotFoundResult();
