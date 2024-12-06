@@ -25,19 +25,28 @@ namespace Company.Function
             if (string.IsNullOrWhiteSpace(blobName)) return new NotFoundResult();
             logger.LogTrace($"blobName: {blobName}");
             BlobClient blobClient = blobContainerClient.GetBlobClient(blobName);
-            Stream stream = req.Body;
-
             try
             {
-                await blobClient.UploadAsync(stream, overwrite: true);
+                using (var memoryStream = new MemoryStream())
+                {
+                    await req.Body.CopyToAsync(memoryStream);
+                    byte[] fileData = memoryStream.ToArray();
+                    if (fileData == null || fileData.Length == 0) return new BadRequestObjectResult("No binary data received.");
+
+                    using (var stream = new MemoryStream(fileData))
+                    {
+                        await blobClient.UploadAsync(stream, overwrite: true);
+                    }
+
+                }
+                logger.LogInformation($"{blobName} has been uploaded.");
+                return new OkObjectResult($"{blobName} has been uploaded.");
             }
             catch (Exception ex)
             {
                 logger.LogError($"Failed to upload blob: {ex.Message}");
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-            logger.LogInformation($"{blobName} has been uploaded.");
-            return new OkObjectResult($"{blobName} has been uploaded.");
         }
     }
 }
