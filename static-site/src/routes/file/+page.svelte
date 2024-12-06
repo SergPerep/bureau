@@ -15,7 +15,7 @@
 	$effect(() => {
 		if (name !== null)
 			getBlobProps(name).then((value) => {
-				(blobUrl = value.url), (status = value.metadata?.status);
+				(blobUrl = value.url), (status = value.metadata?.Status);
 			});
 	});
 </script>

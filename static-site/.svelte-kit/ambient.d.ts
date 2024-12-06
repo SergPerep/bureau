@@ -161,6 +161,7 @@ declare module '$env/static/public' {
 	export const PUBLIC_AZURE_BLOB_CONTAINER: string;
 	export const PUBLIC_AZURE_BLOB_STORAGE_ACCOUNT_SAS_TOKEN: string;
 	export const PUBLIC_AZURE_BLOB_STORAGE_VERSION: string;
+	export const PUBLIC_API_BASE_URL: string;
 }
 
 /**
@@ -321,6 +322,7 @@ declare module '$env/dynamic/public' {
 		PUBLIC_AZURE_BLOB_CONTAINER: string;
 		PUBLIC_AZURE_BLOB_STORAGE_ACCOUNT_SAS_TOKEN: string;
 		PUBLIC_AZURE_BLOB_STORAGE_VERSION: string;
+		PUBLIC_API_BASE_URL: string;
 		[key: `PUBLIC_${string}`]: string | undefined;
 	}
 }

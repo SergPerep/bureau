@@ -1,13 +1,16 @@
 
-import containerClient from './blobServiceClient';
+import { PUBLIC_API_BASE_URL } from "$env/static/public";
 
 export default async function getBlobs() {
-    let i = 1;
-    let names: string[] = [];
-    const blobs = containerClient.listBlobsFlat();
-    for await (const blob of blobs) {
-        names = [...names, blob.name]
-        console.log(`Blob ${i++}: ${blob.name}`);
+    const res = await fetch(`${PUBLIC_API_BASE_URL}/GetBlobs`);
+    try {
+        if (!res.ok) {
+            return console.error("Failed to pull list of blobs");
+        }
+    
+        const { blobNames } = await res.json();
+        return blobNames;
+    } catch (error) {
+        console.error(error)
     }
-    return names;
-}
+};
