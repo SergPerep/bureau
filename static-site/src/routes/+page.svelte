@@ -15,7 +15,8 @@
 		if (!file) return;
 		const formData = new FormData();
 		formData.append("file", file);
-		await putBlob(file);
+		const message = await putBlob(file);
+		console.log(message);
 	};
 
 	$effect(() => {

@@ -1,21 +1,24 @@
-import containerClient from "./blobServiceClient";
 import { Buffer } from "buffer";
+import { PUBLIC_API_BASE_URL } from "$env/static/public";
 
-export default async function putBlob(file: File){
+export default async function putBlob(file: File) {
     let contentLength = file.size;
-    // stat(filePath, (err, stats) => {
-    //     if (err) throw err;
-    //     contentLength = stats.size;
-    // })
     const arrayBuffer = await file.arrayBuffer();
     let content: Buffer = Buffer.from(arrayBuffer);
-    // readFile(filePath, (err, data) => {
-    //     if (err) throw err;
-    //     content = data;
-    // })
     const blobName = file.name;
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-    const uploadBlobResponse = await blockBlobClient.upload(content, contentLength);
-    console.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId)
-    return uploadBlobResponse;
+    try {
+        const res = await fetch(`${PUBLIC_API_BASE_URL}/PutBlob?blobName=${blobName}`, {
+            method: "PUT",
+            headers: {
+                "Content-Length": contentLength.toString(),
+                "Content-Type": "application/octet-stream",
+            },
+            body: content
+        })
+        if (!res.ok) console.log("Failed to upload file")
+        const data = await res.text();
+        return data;
+    } catch (error) {
+        console.log(`Upload block blob ${blobName} successfully`);
+    }
 }
